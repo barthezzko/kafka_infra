@@ -1,0 +1,5 @@
+/target/
+/streams.examples.iml
+.settings/
+.idea/
+.project
