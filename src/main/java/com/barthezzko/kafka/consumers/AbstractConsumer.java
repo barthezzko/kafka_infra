@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -17,20 +16,14 @@ public abstract class AbstractConsumer {
 
     protected Logger logger = LoggerFactory.getLogger(AbstractConsumer.class);
     private final List<String> topics;
-    private volatile boolean isEnabled;
     private final static String CONSUMER_PREFIX = "consumer.";
+    protected KafkaConsumer<String, String> consumer;
 
     public AbstractConsumer(List<String> topics){
         this.topics = topics;
-        Properties consumerProperties = Utils.getPropertiesByPrefix(CONSUMER_PREFIX);
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProperties);
-        consumer.subscribe(topics);
-        while (isEnabled) {
-            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
-            for (ConsumerRecord<String, String> record : records) {
-                onRecord(record);
-            }
-        }
+        Properties consumerProperties = Utils.getPropertiesByPrefixAndStripOffPrefix(CONSUMER_PREFIX);
+        this.consumer = new KafkaConsumer<>(consumerProperties);
+        this.consumer.subscribe(topics);
     }
 
     protected List<String> getTopics(){
@@ -38,8 +31,4 @@ public abstract class AbstractConsumer {
     }
 
     abstract void onRecord(ConsumerRecord<String, String> record);
-
-    public void stop(){
-        isEnabled = false;
-    }
 }
