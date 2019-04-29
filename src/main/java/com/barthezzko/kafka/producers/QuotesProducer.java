@@ -26,7 +26,7 @@ public class QuotesProducer extends AbstractProducer implements Runnable {
         while (true) {
             tickerInfoMap.forEach((ticker, info) -> send(String.format("~%s:ticker=%s:price=%s", quotesCounter.incrementAndGet(), ticker, fluctuate(info.getRefdataPrice()))));
             try {
-                TimeUnit.MICROSECONDS.sleep(100);
+                TimeUnit.MILLISECONDS.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

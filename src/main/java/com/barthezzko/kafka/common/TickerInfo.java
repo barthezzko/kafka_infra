@@ -34,6 +34,10 @@ public class TickerInfo {
         return totalPrice / pricesCollected;
     }
 
+    public synchronized int getPricesCollected() {
+        return pricesCollected;
+    }
+
     public synchronized void appendQuote(double quote) {
         totalPrice += quote;
         pricesCollected++;
